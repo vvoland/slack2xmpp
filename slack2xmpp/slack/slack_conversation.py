@@ -50,6 +50,10 @@ class SlackConversation(Gateway):
             return
 
         user_id = event["user"]
+
+        if user_id == slack.me:
+            self._log.debug("Message from myself, dont care")
+            return
         try:
             user = slack.users[user_id]
         except KeyError:

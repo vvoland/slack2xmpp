@@ -100,6 +100,13 @@ class SlackClient(Client):
                     "type": c_type
                 }
 
+    def fetch_me(self):
+        response = self._slack.api_call("users.identity")
+        if not response["ok"]:
+            msg = "Could not fetch user identity " + response["error"]
+            raise RuntimeError(msg)
+        self.me = response["user"]["id"]
+
     def _get_im_name(self, conversation):
         user_id = conversation["user"]
         name = user_id
@@ -126,10 +133,11 @@ class SlackClient(Client):
 
     def _on_connected(self):
         self._log.info("Connected to Slack!")
+
         self.fetch_users()
+        self.fetch_me()
         self.fetch_conversations()
         self.on_connected.notify()
-
     def _on_event(self, event):
         try:
             event_type = event["type"]
