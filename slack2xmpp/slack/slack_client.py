@@ -35,6 +35,9 @@ class SlackClient(Client):
                 # https://github.com/slackapi/python-slackclient/issues/101
                 self._log.info("Connection reset. Reconnecting...")
                 return
+            except BlockingIOError as ex:
+                self._log.info("Connection BlockingIOError: %s", str(ex))
+                return
             for event in events:
                 self._on_event(event)
             time.sleep(self.sleep_time)
