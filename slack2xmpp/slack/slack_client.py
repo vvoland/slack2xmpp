@@ -25,7 +25,7 @@ class SlackClient(Client):
             if slack.rtm_connect(auto_reconnect=True):
                 self._connection_loop()
             else:
-                raise RuntimeError("Failed to connect to slack")
+                self._log.warning("Failed to connect to Slack. Retrying...")
 
     def _connection_loop(self):
         while self._run:
